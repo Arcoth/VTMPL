@@ -22,13 +22,13 @@ namespace vtmpl
 
 		using value_type = Type;
 
-		static constexpr value_type arr[]{ args... };
+		static constexpr value_type array[]{ args... };
 
 	private:
 
 		static constexpr size_type _count_impl( char c, size_type index )
 		{
-			return arr[index] == c + (index == 0 ? 0 : _count_impl(c, index - 1));
+			return array[index] == c + (index == 0 ? 0 : _count_impl(c, index - 1));
 		}
 
 		static constexpr size_type _find_nested_impl( value_type open, value_type close, size_type Z, size_type pos )
@@ -40,7 +40,7 @@ namespace vtmpl
 
 		static constexpr size_type _find_impl( char c, size_type index )
 		{
-			return index == length ? npos : c == arr[index] ? index : _find_impl(c, index + 1);
+			return index == length ? npos : c == array[index] ? index : _find_impl(c, index + 1);
 		}
 
 	public:
@@ -57,7 +57,7 @@ namespace vtmpl
 
 	template <typename Type,
 			  Type... args>
-	constexpr Type value_list_base<Type, args...>::arr[];
+	constexpr Type value_list_base<Type, args...>::array[];
 
 	template<typename Type,
 		     Type... args>
@@ -72,11 +72,8 @@ namespace vtmpl
 	template<char... args>
 	char constexpr value_list<char, args...>::nt_arr[];
 
-	template< typename, typename >  struct equal;
-
-	template< typename T, T... first, T... last >
-	struct equal< value_list<T, first...>,
-	              value_list<T, second...> > :
+	template< typename T, typename T2 >
+	using equal = std::is_same<T, T2>;
 
 
 }

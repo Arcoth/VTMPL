@@ -20,7 +20,7 @@ namespace vtmpl
 	struct sub_list<value_list<Type, args...>,
 	                pos, len,
 	                index_list<indices...>> :
-		value_list<Type, value_list<Type, args...>::arr[pos + indices]...> {};
+		value_list<Type, value_list<Type, args...>::array[pos + indices]...> {};
 
 	/// concat: Use to merge two lists.
 
@@ -42,7 +42,7 @@ namespace vtmpl
 	          template<index_type> class function,
 	          index_type... enums>
 	struct transform<index_list<indices...>, function, index_list<enums...>> :
-		index_list< function<index_list<indices...>::arr[enums]>::value... > {};
+		index_list< function<index_list<indices...>::array[enums]>::value... > {};
 
 	/// generate: Use to generate a list with a function which takes an index as an argument
 

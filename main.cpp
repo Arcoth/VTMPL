@@ -6,8 +6,8 @@
 #include <iterator>
 #include <iostream>
 
-template< typename >
-struct one_of
+template< typename String, typename... Strings >
+struct one_of :
 
 int main()
 {

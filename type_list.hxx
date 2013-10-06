@@ -20,7 +20,7 @@ namespace vtmpl
 
 	// Use this function inside a decltype-specifier to retrieve the deduced template arguments
 	template<typename... Args>
-	type_list<Args...> arg_type_list( Args&&... );
+	type_list<eval<std::decay<Args>>...> arg_type_list( Args&&... );
 
 	/// concat_type_lists //////////////////////////////////////////////////////////
 
