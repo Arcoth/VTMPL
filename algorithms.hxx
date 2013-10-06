@@ -22,15 +22,95 @@ namespace vtmpl
 	                index_list<indices...>> :
 		value_list<Type, value_list<Type, args...>::array[pos + indices]...> {};
 
-	/// concat: Use to merge two lists.
+	/// split_at: Splits the list into to sublists as specified by the position. The value at position pos is in the first list.
 
-	template <typename, typename> struct concat;
+	template <typename list,
+	          size_type pos> struct split_at;
+
+	template <typename val_t,
+	          val_t ... values,
+	          size_type pos>
+	struct split_at<value_list<val_t, values...>,
+	                pos> :
+		type_pair< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
+	                 eval<sub_list<value_list<val_t, values...>, pos, sizeof...(values) - pos>> > {};
+
+	/// concat/concat_3
+
+	template <typename, typename          > struct concat;
+	template <typename, typename, typename> struct concat_3;
 
 	template < typename val_t,
 	           val_t ... first,
 	           val_t ... second >
 	struct concat<value_list<val_t, first...>,
-	              value_list<val_t, second...>> : value_list<val_t, first..., second...> {};
+	               value_list<val_t, second...>> :
+		value_list<val_t, first..., second...> {};
+
+	// to reduce recursion
+	template < typename val_t,
+	           val_t ... first,
+	           val_t ... second,
+	           val_t ... third >
+	struct concat_3<value_list<val_t, first...>,
+			    value_list<val_t, second...>,
+			    value_list<val_t, third...>> :
+		value_list<val_t, first..., second..., third...> {};
+
+	/// replace
+
+	template <typename list,
+	          size_type pos,
+	          typename list::value_type new_val>
+	struct replace;
+
+	template <typename val_t, val_t... values,
+	          size_type pos,
+	          val_t new_val>
+	struct replace<value_list<val_t, values...>,
+	               pos,
+	               new_val> :
+		concat_3< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
+	               value_list<val_t, new_val>,
+	               eval<sub_list<value_list<val_t, values...>, pos + 1, value_list<val_t, values...>::length - pos - 1>> > {};
+
+	/// remove_if_not
+
+	template< typename T,
+	          typename,
+	          typename = value_list<typename T::value_type> >
+	struct remove_if_not;
+
+	template< typename T,
+	          T... seq,
+	          T... not_erase,
+	          T... so_far >
+	struct remove_if_not< value_list<T, seq...>,
+	                      value_list<T, not_erase...>,
+	                      value_list<T, so_far...> >
+	{
+		using split_pair = split_at<value_list<T, seq...>, sizeof...(seq)/2>;
+
+		using first  = remove_if_not< typename split_pair::first , value_list<T, not_erase...>, value_list<T, so_far...> >;
+		using second = remove_if_not< typename split_pair::second, value_list<T, not_erase...>, value_list<T, so_far...> >;
+
+		using type = eval<concat<eval<first>, eval<second>>>;
+	};
+
+	template< typename T,
+	          T seq,
+	          T... not_erase,
+	          T... so_far >
+	struct remove_if_not< value_list<T, seq>,
+	                      value_list<T, not_erase...>,
+	                      value_list<T, so_far...> >  :  cond< value_list<T, not_erase...>::find(seq) != npos,
+	                                                           value_list<T, seq>, value_list<T> > {};
+	template< typename T,
+		    T... not_erase,
+		    T... so_far >
+	struct remove_if_not< value_list<T>,
+	                      value_list<T, not_erase...>,
+	                      value_list<T, so_far...> >  :  value_list<T, so_far...> {};
 
 	/// transform: Use to apply a function to a list of indices
 
@@ -83,19 +163,6 @@ namespace vtmpl
 
 		#undef DEFINE_FO
 	}
-
-	/// split_at: Splits the list into to sublists as specified by the position. The value at position pos is in the first list.
-
-	template <typename list,
-	          size_type pos> struct split_at;
-
-	template <typename val_t,
-	          val_t ... values,
-	          size_type pos>
-	struct split_at<value_list<val_t, values...>,
-	                pos> :
-		type_pair< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
-	                 eval<sub_list<value_list<val_t, values...>, pos, sizeof...(values) - pos>> > {};
 
 	/// rtrim: cuts of all values after a specific one
 
