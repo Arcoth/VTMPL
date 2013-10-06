@@ -12,13 +12,13 @@ namespace vtmpl
 
 	template <typename T, T...> struct value_list;
 
+	constexpr size_type npos = std::numeric_limits<size_type>::max();
+
 	template <typename Type,
 			  Type... args>
 	struct value_list_base : identity<value_list<Type, args...>>
 	{
 		static constexpr size_type length = sizeof...(args);
-
-		static constexpr size_type npos = std::numeric_limits<size_type>::max();
 
 		using value_type = Type;
 
@@ -71,6 +71,13 @@ namespace vtmpl
 
 	template<char... args>
 	char constexpr value_list<char, args...>::nt_arr[];
+
+	template< typename, typename >  struct equal;
+
+	template< typename T, T... first, T... last >
+	struct equal< value_list<T, first...>,
+	              value_list<T, second...> > :
+
 
 }
 

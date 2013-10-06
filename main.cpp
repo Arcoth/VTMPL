@@ -6,6 +6,9 @@
 #include <iterator>
 #include <iostream>
 
+template< typename >
+struct one_of
+
 int main()
 {
 }
