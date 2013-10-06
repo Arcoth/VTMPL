@@ -15,6 +15,11 @@ namespace vtmpl
 		using std_tuple = std::tuple<Types...>;
 	};
 
+	template< typename, typename > struct find;
+	template< typename to_find, typename ... Args >
+	struct find<type_list<Args...>, to_find> :
+		std::integral_constant<size_type, value_list<bool, std::is_same<Args, to_find>::value...>>::find(true)> {};
+
 	template< typename List, size_type i >
 	using get = eval< std::tuple_element<i, typename List::std_tuple> >;
 
