@@ -6,12 +6,6 @@
 namespace vtmpl
 {
 
-	template<typename A, typename B>
-	struct type_pair : identity<type_pair<A,B>>
-	{
-		using first = A;
-		using second = B;
-	};
 
 }
 

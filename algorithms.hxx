@@ -3,7 +3,7 @@
 
 #include "value_list.hxx"
 #include "index_list.hxx"
-#include "type_pair.hxx"
+#include "type_list.hxx"
 
 namespace vtmpl
 {
@@ -25,15 +25,18 @@ namespace vtmpl
 	/// split_at: Splits the list into to sublists as specified by the position. The value at position pos is in the first list.
 
 	template <typename list,
-	          size_type pos> struct split_at;
+	          size_type pos,
+	          bool keep_delim = true> struct split_at;
 
 	template <typename val_t,
 	          val_t ... values,
-	          size_type pos>
+	          size_type pos,
+	          bool keep_delim>
 	struct split_at<value_list<val_t, values...>,
-	                pos> :
-		type_pair< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
-	                 eval<sub_list<value_list<val_t, values...>, pos, sizeof...(values) - pos>> > {};
+	                pos,
+	                keep_delim> :
+		type_list< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
+	                 eval<sub_list<value_list<val_t, values...>, pos + keep_delim, sizeof...(values) - pos - keep_delim>> > {};
 
 	/// concat/concat_3
 
@@ -167,10 +170,10 @@ namespace vtmpl
 	/// rtrim: cuts of all values after a specific one
 
 	template<typename List, typename List::value_type> struct rtrim;
+
 	template<typename Type, Type ... args, Type to_find>
 	struct rtrim<value_list<Type, args...>, to_find> :
-		split_at<value_list<Type, args...>,
-		         value_list<Type, args...>::find( to_find )>::first {};
+		sub_list< value_list<Type, args...>, 0, value_list<Type, args...>::find(to_find) > {};
 }
 
 #endif // ALGORITHMS_HXX_INCLUDED
