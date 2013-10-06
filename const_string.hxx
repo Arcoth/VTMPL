@@ -24,6 +24,19 @@ namespace vtmpl
 	#define STRING_256(str) STRING_IMPL(str, 256)
 	#define STRING_1024(str) STRING_IMPL(str, 1024)
 
+	/// Create a string from a pointer and length
+
+	template< char const* ptr,
+		    size_type len,
+		    typename=eval<make_index_list<len>> >
+	struct string_from_ptr;
+
+	template< char const* ptr,
+		    size_type len,
+		    index_type... indices >
+	struct string_from_ptr<ptr, len, index_list<indices...>> :
+		const_string<ptr[indices]...>  {};
+
 }
 
 #endif // CONST_STRING_HXX_INCLUDED
