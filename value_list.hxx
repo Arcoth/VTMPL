@@ -16,7 +16,7 @@ namespace vtmpl
 
 	template <typename Type,
 			  Type... args>
-	struct value_list_base : identity<value_list<Type, args...>>
+	struct value_list : identity<value_list<Type, args...>>
 	{
 		static constexpr size_type length = sizeof...(args);
 
@@ -56,21 +56,18 @@ namespace vtmpl
 	};
 
 	template <typename Type,
-			  Type... args>
-	constexpr Type value_list_base<Type, args...>::array[];
+	          Type... args>
+	constexpr Type value_list<Type, args...>::array[];
 
-	template<typename Type,
-		     Type... args>
-	struct value_list : value_list_base<Type, args...> {};
-
-	template<char... args>
-	struct value_list<char, args...> : value_list_base<char, args...>
+	template<typename> struct nt_array_from;
+	template<typename T, T... vals>
+	struct nt_array_from<value_list<T, vals...>>
 	{
-		static char constexpr nt_arr[]{ args..., '\0' };
+		static constexpr T array[]{vals..., T(0)};
 	};
 
-	template<char... args>
-	char constexpr value_list<char, args...>::nt_arr[];
+	template<typename T, T... vals>
+	constexpr T nt_array_from<value_list<T, vals...>>::array[];
 
 	template< typename T, typename T2 >
 	using equal = std::is_same<T, T2>;
