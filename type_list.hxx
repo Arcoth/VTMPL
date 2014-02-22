@@ -22,6 +22,9 @@ namespace vtmpl
 	template< typename List, size_type i >
 	using get = eval< std::tuple_element<i, typename List::std_tuple> >;
 
+	template< typename List >
+	using back = eval< std::tuple_element<List::length-1, typename List::std_tuple> >;
+
 	// Use this function inside a decltype-specifier to retrieve the deduced template arguments
 	template<typename... Args>
 	type_list<eval<std::decay<Args>>...> arg_type_list( Args&&... );
@@ -33,6 +36,15 @@ namespace vtmpl
 	template<typename ... first,
 			 typename ... second>
 	struct concat<type_list<first...>, type_list<second...>> : type_list<first..., second...> {};
+
+	/// replace-last
+
+	template<typename, typename> struct replace_last;
+	template<typename New, typename First, typename... Types>
+	struct replace_last<New, type_list<First, Types...>> :
+	    concat<type_list<First>, typename replace_last<New, type_list<Types...>>::type> {};
+	template<typename New, typename First>
+	struct replace_last<New, type_list<First>> : type_list<New> {};
 
 }
 

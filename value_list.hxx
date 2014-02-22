@@ -26,7 +26,7 @@ namespace vtmpl
 
 	private:
 
-		static constexpr size_type _count_impl( char c, size_type index )
+		static constexpr size_type _count_impl( value_type c, size_type index )
 		{
 			return array[index] == c + (index == 0 ? 0 : _count_impl(c, index - 1));
 		}
@@ -38,20 +38,20 @@ namespace vtmpl
 				 _find_nested_impl(open, close, Z, pos+1) ;
 		}
 
-		static constexpr size_type _find_impl( char c, size_type index )
+		static constexpr size_type _find_impl( value_type c, size_type index )
 		{
 			return index == length ? npos : c == array[index] ? index : _find_impl(c, index + 1);
 		}
 
 	public:
 
-		static constexpr size_type count( char c )
+		static constexpr size_type count( value_type c )
 		{ return _count_impl( c, length - 1 ); }
 
 		static constexpr size_type find_nested( value_type open, value_type close, size_type start_pos = 0 )
 		{ return _find_nested_impl(open, close, 0, start_pos); }
 
-		static constexpr size_type find( char c )
+		static constexpr size_type find( value_type c )
 		{ return _find_impl( c, 0 ); }
 	};
 
