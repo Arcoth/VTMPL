@@ -2,6 +2,7 @@
 #define TYPEDEFS_HXX_INCLUDED
 
 #include <type_traits>
+#include <cstdint>
 
 namespace vtmpl
 {
@@ -15,6 +16,15 @@ namespace vtmpl
 
 	template<bool B, typename T, typename F>
 	using cond = eval<std::conditional<B, T, F>>;
+
+	template<int64_t Val>
+	using int_ = std::integral_constant<int64_t, Val>;
+
+	template<uint64_t Val>
+	using uint_ = std::integral_constant<uint64_t, Val>;
+
+	template<bool C>
+	using requires = eval<std::enable_if<C>>;
 
 }
 
