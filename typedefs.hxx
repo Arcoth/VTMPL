@@ -26,6 +26,25 @@ namespace vtmpl
 	template<bool C>
 	using requires = eval<std::enable_if<C>>;
 
+	constexpr bool isdigit( char c )
+	{
+		return c >= '0' && c <= '9';
+	}
+
+	template<typename T>
+	constexpr T max( T a, T b )
+	{
+		return a > b? a : b;
+	}
+
+	template<typename T>
+	constexpr T min( T a, T b )
+	{
+		return a < b? a : b;
+	}
+
+	#define sconst static constexpr
+
 }
 
 #endif // TYPEDEFS_HXX_INCLUDED

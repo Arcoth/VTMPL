@@ -8,10 +8,10 @@
 namespace vtmpl
 {
 
-	template <typename,
-	          size_type,
-	          size_type len,
-	          typename = eval<make_index_list<len>>> struct sub_list;
+	template <typename str,
+	          size_type pos,
+	          size_type len = npos,
+	          typename = eval<make_index_list<min(len, str::length - pos)>>> struct sub_list;
 
 	template <typename Type, Type ... args,
 	          size_type pos,

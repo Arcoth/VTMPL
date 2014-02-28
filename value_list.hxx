@@ -18,40 +18,40 @@ namespace vtmpl
 			  Type... args>
 	struct value_list : identity<value_list<Type, args...>>
 	{
-		static constexpr size_type length = sizeof...(args);
+		sconst size_type length = sizeof...(args);
 
 		using value_type = Type;
 
-		static constexpr value_type array[]{ args... };
+		sconst value_type array[]{ args... };
 
 	private:
 
-		static constexpr size_type _count_impl( value_type c, size_type index )
+		sconst size_type _count_impl( value_type c, size_type index )
 		{
 			return array[index] == c + (index == 0 ? 0 : _count_impl(c, index - 1));
 		}
 
-		static constexpr size_type _find_nested_impl( value_type open, value_type close, size_type Z, size_type pos )
+		sconst size_type _find_nested_impl( value_type open, value_type close, size_type Z, size_type pos )
 		{
 			return array[pos] == close? (Z == 0 ? pos : _find_nested_impl(open, close, Z-1, pos+1)) :
 				 array[pos] == open ? _find_nested_impl(open, close, Z+1, pos+1) :
 				 _find_nested_impl(open, close, Z, pos+1) ;
 		}
 
-		static constexpr size_type _find_impl( value_type c, size_type index )
+		sconst size_type _find_impl( value_type c, size_type index )
 		{
 			return index == length ? npos : c == array[index] ? index : _find_impl(c, index + 1);
 		}
 
 	public:
 
-		static constexpr size_type count( value_type c )
+		sconst size_type count( value_type c )
 		{ return _count_impl( c, length - 1 ); }
 
-		static constexpr size_type find_nested( value_type open, value_type close, size_type start_pos = 0 )
+		sconst size_type find_nested( value_type open, value_type close, size_type start_pos = 0 )
 		{ return _find_nested_impl(open, close, 0, start_pos); }
 
-		static constexpr size_type find( value_type c )
+		sconst size_type find( value_type c )
 		{ return _find_impl( c, 0 ); }
 	};
 
@@ -63,7 +63,7 @@ namespace vtmpl
 	template<typename T, T... vals>
 	struct nt_array_from<value_list<T, vals...>>
 	{
-		static constexpr T array[]{vals..., T(0)};
+		sconst T array[]{vals..., T(0)};
 	};
 
 	template<typename T, T... vals>
