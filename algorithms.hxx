@@ -115,6 +115,26 @@ namespace vtmpl
 	                      value_list<T, not_erase...>,
 	                      value_list<T, so_far...> >  :  value_list<T, so_far...> {};
 
+	/// find_first_not_of
+
+	template<typename, typename, size_type = 0, typename=void> find_first_not_of;
+
+	template< typename List, typename Check, size_type pos >
+	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos && pos != List::length-1>> :
+		 find_first_not_of<List, Check, pos+1> {};
+
+	template< typename List, typename Check, size_type pos >
+	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos && pos == List::length-1>> :
+	{
+		sconst auto value = pos+1;
+	};
+
+	template< typename List, typename Check, size_type pos >
+	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos>> :
+	{
+		sconst auto value = pos;
+	};
+
 	/// transform: Use to apply a function to a list of indices
 
 	template <typename T,
