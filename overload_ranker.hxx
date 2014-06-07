@@ -3,7 +3,7 @@
 
 #include "typedefs.hxx"
 /** If you want to gain independence from this header, define index_type in the namespace vtmpl
-    as a (preferably) unsigned integer type. */
+    as a integer type. */
 
 namespace vtmpl
 {

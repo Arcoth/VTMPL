@@ -10,7 +10,7 @@ namespace vtmpl
 
 	using size_type = unsigned;
 
-	using index_type = size_type;
+	using index_type = int;
 
 	template<typename T>
 	using eval = typename T::type;
