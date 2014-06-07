@@ -17,7 +17,7 @@ namespace vtmpl
 	template< typename, typename > struct find;
 	template< typename to_find, typename ... Args >
 	struct find<type_list<Args...>, to_find> :
-		std::integral_constant<size_type, value_list<bool, equal<Args, to_find>::value...>::find(true)> {};
+		size_< value_list<bool, equal<Args, to_find>::value...>::find(true) > {};
 
 	template< typename List, std::size_t i >
 	using type_list_at = typename std::tuple_element<i, typename List::std_tuple>::type;
@@ -50,11 +50,11 @@ namespace vtmpl
 
 	template< typename List, std::size_t pos, std::size_t len = npos,
 	          typename = eval<make_index_list< min(len, List::length - pos) >> >
-	struct sub_list;
+	struct sub_type_list;
 
 	template< typename List, std::size_t pos, std::size_t len,
 	          index_type ... indices >
-	struct sub_list<List, pos, len, index_list<indices...>> :
+	struct sub_type_list<List, pos, len, index_list<indices...>> :
 		type_list<type_list_at<List, pos + indices>...> {};
 
 	/// remove //////////////////////////////////////////////////////////

@@ -8,6 +8,16 @@
 namespace vtmpl
 {
 
+	template< typename List,
+	          typename OutputIterator >
+	void copy( OutputIterator out )
+	{
+		auto first = std::begin(List::array);
+		auto last  = std::end(List::array);
+		while( first != last )
+			*out++ = *first++;
+	}
+
 	template <typename str,
 	          size_type pos,
 	          size_type len = npos,
@@ -117,79 +127,92 @@ namespace vtmpl
 
 	/// find_first_not_of
 
-	template<typename, typename, size_type = 0, typename=void> find_first_not_of;
+	template <typename, typename, size_type = 0, typename=void> struct find_first_not_of;
 
 	template< typename List, typename Check, size_type pos >
-	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos && pos != List::length-1>> :
-		 find_first_not_of<List, Check, pos+1> {};
+	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos && pos != List::length-1>> :
+		find_first_not_of<List, Check, pos+1> {};
 
 	template< typename List, typename Check, size_type pos >
-	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos && pos == List::length-1>> :
+	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos && pos == List::length-1>>
 	{
-		sconst auto value = pos+1;
+		sconst auto value = npos;
 	};
 
 	template< typename List, typename Check, size_type pos >
-	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos>> :
+	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos>>
 	{
 		sconst auto value = pos;
 	};
 
-	/// transform: Use to apply a function to a list of indices
+	/// transform: Use to apply a function to a list of values
 
-	template <typename T,
-	          template<index_type> class,
-	          typename = eval<make_index_list<T::length>>> struct transform;
+	template <typename List,
+	          template<typename V, V> class,
+	          typename = eval<make_index_list<List::length>>> struct transform;
 
-	template <index_type... indices,
-	          template<index_type> class function,
+	template <typename V,
+	          V... values,
+	          template<typename FV, FV> class function,
 	          index_type... enums>
-	struct transform<index_list<indices...>, function, index_list<enums...>> :
-		index_list< function<index_list<indices...>::array[enums]>::value... > {};
+	struct transform<value_list<V, values...>, function, index_list<enums...>> :
+		index_list< function<V, value_list<V, values...>::array[enums]>::value... > {};
 
 	/// generate: Use to generate a list with a function which takes an index as an argument
 
 	template <size_type N,
-	          template<size_type> class generator,
+	          template<typename T, T> class generator,
 	          typename = eval<make_index_list<N>>> struct generate;
 
 	template <size_type N,
-	          template<size_type> class generator,
-	          index_type... indices>
-	struct generate<N, generator, index_list<indices...>> :
-		index_list< generator<indices>::value... > {};
+	          template<typename FV, FV> class generator,
+	          typename V,
+	          V... values>
+	struct generate<N, generator, value_list<V, values...>> :
+		value_list< V, generator<V, values>::value... > {};
 
 	/// predefined function objects (for transform):
 
 	namespace functions
 	{
-		#define DEFINE_FO( name, ... )                                                  \
-			template<index_type a>                                                      \
-			struct name                                                                 \
-			{                                                                           \
-				template<index_type b>                                                  \
-				struct function : std::integral_constant<index_type, (__VA_ARGS__)> {}; \
+		#define DEFINE_FO( name, ... )                                             \
+			template< typename T, T a>                                           \
+			struct name                                                          \
+			{                                                                    \
+				template<typename ValueT, typename ValueT::value_type b = ValueT::value>                                                  \
+				struct function : std::integral_constant<T, (__VA_ARGS__)> {}; \
 			}
 
-		DEFINE_FO(add, b + a);
-		DEFINE_FO(xor_, b xor a);
-		DEFINE_FO(multiply, b * a);
-		DEFINE_FO(modulo, b % a);
+
+		DEFINE_FO( add     ,  b + a );
+		DEFINE_FO( bit_xor ,  b ^ a );
+		DEFINE_FO( bit_and ,  b & a );
+		DEFINE_FO( bit_or  ,  b | a );
+		DEFINE_FO( multiply,  b * a );
+		DEFINE_FO( modulo  ,  b % a );
 
 
 		#undef DEFINE_FO
-		#define DEFINE_FO( name, ... )                                                  \
-			template<index_type a> struct name : std::integral_constant<index_type, (__VA_ARGS__)> {}
+		#define DEFINE_FO( name, ... ) \
+			template<typename T, T a> struct name : std::integral_constant<T, (__VA_ARGS__)> {}
 
-		DEFINE_FO( square, a*a );
-		DEFINE_FO( invert, -a );
+		DEFINE_FO( square , a*a );
+		DEFINE_FO( negate , -a );
+		DEFINE_FO( bit_not, ~a );
 
 		#undef DEFINE_FO
+
+		template< typename T, T(*func)( T ) >
+		struct from_function_ptr
+		{
+			template< typename V, V b >
+			struct function : std::integral_constant<V, func(b)> {};
+		};
 	}
 
 	/// rtrim: cuts of all values after a specific one
 
-	template<typename List, typename List::value_type> struct rtrim;
+	template<typename List, typename List::value_type = typename List::value_type{}> struct rtrim;
 
 	template<typename Type, Type ... args, Type to_find>
 	struct rtrim<value_list<Type, args...>, to_find> :

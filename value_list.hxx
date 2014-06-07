@@ -4,18 +4,11 @@
 #include "typedefs.hxx"
 #include "identity.hxx"
 
-#include <limits>
-#include <type_traits>
-
 namespace vtmpl
 {
 
-	template <typename T, T...> struct value_list;
-
-	constexpr size_type npos = std::numeric_limits<size_type>::max();
-
 	template <typename Type,
-			  Type... args>
+	          Type... args>
 	struct value_list : identity<value_list<Type, args...>>
 	{
 		sconst size_type length = sizeof...(args);
@@ -25,6 +18,44 @@ namespace vtmpl
 		sconst value_type array[]{ args... };
 
 	private:
+
+#if __cplusplus > 201103 || defined VTMPL_ENABLE_CPP1Y
+
+		sconst size_type _count_impl( value_type c, size_type )
+		{
+			size_type rval = 0;
+			for( auto v : array )
+				if( v == c )
+					++rval;
+
+			return rval;
+		}
+
+		sconst size_type _find_nested_impl( value_type open, value_type close, size_type Z, size_type pos )
+		{
+			for(; pos != length ; ++pos)
+				if     ( array[pos] == open  )
+					++Z;
+				else if( array[pos] == close )
+				{
+					if( Z == 0 )
+						return pos;
+					--Z;
+				}
+
+			return npos;
+		}
+
+		sconst size_type _find_impl( value_type c, size_type )
+		{
+			for( size_type i = 0; i != length; ++i )
+				if( array[i] == c )
+					return i;
+
+			return npos;
+		}
+
+#else
 
 		sconst size_type _count_impl( value_type c, size_type index )
 		{
@@ -42,6 +73,8 @@ namespace vtmpl
 		{
 			return index == length ? npos : c == array[index] ? index : _find_impl(c, index + 1);
 		}
+
+#endif
 
 	public:
 

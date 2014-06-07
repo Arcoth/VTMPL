@@ -11,7 +11,7 @@ using namespace vtmpl;
 
 template< typename Str, typename ... matches >
 struct one_of :
-	std::integral_constant<bool, find<type_list<matches...>, Str >::value != npos> {};
+	bool_< find<type_list<matches...>, Str >::value != npos > {};
 
 template< typename Str >
 struct or_matcher
@@ -20,9 +20,25 @@ struct or_matcher
 
 	template< typename Str2 >
 	struct matches :
-		std::integral_constant<bool,
-		                       find<type_list<get<splitted, 0>, get<splitted, 1>>, Str2 >::value != npos> {};
+		bool_< find<type_list<type_list_at<splitted, 0>,
+		                      type_list_at<splitted, 1>>, Str2 >::value != npos > {};
 };
+
+constexpr unsigned rad( unsigned b )
+{
+	unsigned const original_b = b+1;
+	unsigned res = 1;
+	for( unsigned div = 2; div < original_b; ++div )
+		if( b % div == 0 )
+		{
+			res *= div;
+			do
+				b /= div;
+			while( b % div == 0 );
+		}
+
+	return res;
+}
 
 int main()
 {
@@ -32,4 +48,7 @@ int main()
 
 	static_assert( or_matcher<expr>::matches<STRING("a")>::value , "" );
 	static_assert( !or_matcher<expr>::matches<STRING("foo")>::value , "" );
+
+	std::cout << "Rads of first 30 numbers: ";
+	copy<generate<30, functions::from_function_ptr<unsigned, &rad>::function>>( std::ostream_iterator<unsigned>{std::cout, " "} );
 }

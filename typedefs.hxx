@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <cstdint>
+#include <limits>
 
 namespace vtmpl
 {
@@ -17,11 +18,19 @@ namespace vtmpl
 	template<bool B, typename T, typename F>
 	using cond = eval<std::conditional<B, T, F>>;
 
-	template<int64_t Val>
-	using int_ = std::integral_constant<int64_t, Val>;
+	template<bool Val>
+	using bool_ = std::integral_constant<bool, Val>;
 
-	template<uint64_t Val>
-	using uint_ = std::integral_constant<uint64_t, Val>;
+	template<std::intmax_t Val>
+	using int_ = std::integral_constant<std::intmax_t, Val>;
+
+	template<std::uintmax_t Val>
+	using uint_ = std::integral_constant<std::uintmax_t, Val>;
+
+	template<size_type Val>
+	using size_ = std::integral_constant<size_type, Val>;
+
+	constexpr size_type npos = std::numeric_limits<size_type>::max();
 
 	template<bool C>
 	using requires = eval<std::enable_if<C>>;
