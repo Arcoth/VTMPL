@@ -2,7 +2,6 @@
 #define VALUE_LIST_HXX_INCLUDED
 
 #include "typedefs.hxx"
-#include "identity.hxx"
 
 namespace vtmpl
 {

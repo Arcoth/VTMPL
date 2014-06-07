@@ -1,7 +1,6 @@
 #ifndef INDEX_LIST_HXX_INCLUDED
 #define INDEX_LIST_HXX_INCLUDED
 
-#include "identity.hxx"
 #include "typedefs.hxx"
 #include "value_list.hxx"
 

@@ -8,6 +8,12 @@
 namespace vtmpl
 {
 
+	template<typename T>
+	struct identity
+	{
+		using type = T;
+	};
+
 	using size_type = unsigned;
 
 	using index_type = int;
