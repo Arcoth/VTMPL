@@ -52,7 +52,11 @@ namespace vtmpl
 #define sconst static constexpr
 
 #ifndef VTMPL_RELAX_CONSTEXPR_FUNC
-	#define VTMPL_RELAX_CONSTEXPR_FUNC (__cplusplus > 201103 && !defined __GNUG__) // GCC does not support Relaxing requirements on constexpr functions yet
+	#define VTMPL_RELAX_CONSTEXPR_FUNC (__cplusplus > 201103 && (!defined __GNUC__ || __GNUC__ > 4)) // GCC does not support Relaxing requirements on constexpr functions yet
+#endif
+
+#ifndef STRING_LITERAL_OPERATOR_TEMPLATES
+	#define STRING_LITERAL_OPERATOR_TEMPLATES ( __cplusplus > 201103 )
 #endif
 
 #endif // TYPEDEFS_HXX_INCLUDED
