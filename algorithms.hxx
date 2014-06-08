@@ -186,7 +186,7 @@ namespace vtmpl
 		generate_recursive<N-1, Generator, value_list<T, Generator<T, (T)0>::value>> {};
 
 	template< template<typename FV, FV> class Generator, typename List >
-	struct generate_recursive<0, Generator, List> : sub_list<List, 1> {};
+	struct generate_recursive<0, Generator, List> {};
 
 	/// predefined function objects (for transform):
 
