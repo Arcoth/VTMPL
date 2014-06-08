@@ -7,7 +7,8 @@ It makes uses of variadic templates to ease the definition of various compile-ti
 Some headers can be used on their own; they just depend on some definitions in typedefs.hxx, which you can provide yourself.
 
 Some parts are also written in C++1Y and use the "relaxing constraints on constexpr functions"-feature.
-If you know your compiler supports it (but doesn't define the __cplusplus macro greater than 201103), define the VTMPL_RELAX_CONSTEXPR_FUNC yourself to 1.
+If you know your compiler supports it (but doesn't define the __cplusplus macro greater than 201103), define the macro VTMPL_RELAX_CONSTEXPR_FUNC as 1.
+Same applies to STRING_LITERAL_OPERATOR_TEMPLATES, which is used for the definition of VTMPL_STRING.
 
 ---
 
