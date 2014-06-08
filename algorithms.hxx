@@ -18,10 +18,8 @@ namespace vtmpl
 	          typename OutputIterator >
 	void copy( OutputIterator out )
 	{
-		auto first = std::begin(List::array);
-		auto last  = std::end(List::array);
-		while( first != last )
-			*out++ = *first++;
+		for( auto c : List::array )
+			*out++ = c;
 	}
 
 	template <typename str,
