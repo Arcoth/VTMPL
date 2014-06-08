@@ -46,25 +46,13 @@ namespace vtmpl
 	template<bool C>
 	using requires = eval<std::enable_if<C>>;
 
-	constexpr bool isdigit( char c )
-	{
-		return c >= '0' && c <= '9';
-	}
-
-	template<typename T>
-	constexpr T max( T a, T b )
-	{
-		return a > b? a : b;
-	}
-
-	template<typename T>
-	constexpr T min( T a, T b )
-	{
-		return a < b? a : b;
-	}
-
-	#define sconst static constexpr
-
 }
+
+
+#define sconst static constexpr
+
+#ifndef VTMPL_RELAX_CONSTEXPR_FUNC
+	#define VTMPL_RELAX_CONSTEXPR_FUNC (__cplusplus > 201103 && !defined __GNUG__) // GCC does not support Relaxing requirements on constexpr functions yet
+#endif
 
 #endif // TYPEDEFS_HXX_INCLUDED

@@ -28,7 +28,7 @@ namespace vtmpl
 		sconst array_type array{ args... };
 
 
-#if __cplusplus > 201103 || defined VTMPL_ENABLE_CPP1Y
+#if VTMPL_RELAX_CONSTEXPR_FUNC
 
 		sconst size_type _count_impl( value_type c, size_type )
 		{

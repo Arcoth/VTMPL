@@ -7,17 +7,18 @@
 #define PARSERS_HXX_INCLUDED
 
 #include "type_pair.hxx"
+#include "utility.hxx"
 #include "typedefs.hxx"
 
 #include <utility>
 
-#if __cplusplus <= 201103 && !defined VTMPL_ENABLE_CPP1Y
-
-	#error \
-	This file uses C++1Y-features (relaxed constraints on constexpr-functions). \
-	If your compiler supports those features (via a flag such as -std=c++1y / -std=c++14), define the macro \
-	VTMPL_ENABLE_CPP1Y.
-
+#if VTMPL_RELAX_CONSTEXPR_FUNC
+#
+#error \
+This file uses C++1Y-features (relaxed constraints on constexpr-functions). \
+If your compiler supports C++1Y-features, activate them through a flag (most commonly -std=c++1y). \
+Or, if your compiler lacks the macro definition, #define VTMPL_RELAX_CONSTEXPR_FUNC to 1 yourself.
+#
 #endif
 
 
@@ -28,12 +29,17 @@ namespace vtmpl
 	constexpr std::pair<std::uintmax_t, size_type> parse_unsigned( size_type pos = 0 )
 	{
 		std::uintmax_t rval = 0;
+		bool read_anything = false;
+
 		while( pos < String::length && isdigit(String::array[pos]) )
 		{
+			read_anything = true;
 			rval *= 10;
 			rval += String::array[pos] - '0';
 			++pos;
 		}
+
+		VTMPL_ASSERT(read_anything, "Applied parse_unsigned to string without digits!");
 
 		return {rval, pos};
 	}
@@ -51,6 +57,8 @@ namespace vtmpl
 		}
 		else if( first == '+' )
 			++pos;
+		else
+			VTMPL_ASSERT(isdigit(first), "Applied parse_signed to string without sign or digit!");
 
 		auto pair = parse_unsigned<String>(pos);
 

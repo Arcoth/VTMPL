@@ -7,19 +7,10 @@
 #define RANDOM_HXX_INCLUDED
 
 #include "parsers.hxx"
-#include "const_string.hxx"
+#include "time.hxx"
 
 namespace vtmpl
 {
-
-	constexpr std::uintmax_t time()
-	{
-		using str = VTMPL_STRING( __TIME__ );
-
-		return parse_unsigned<str>().first +
-		       parse_unsigned<str>(3).first * 100 +
-		       parse_unsigned<str>(6).first * 10000;
-	}
 
 	template< std::uintmax_t c = 25214903917,
 	          std::uintmax_t a = 11,
@@ -28,6 +19,7 @@ namespace vtmpl
 	{
 		return (state * c + a) % m;
 	}
+
 }
 
 #endif // RANDOM_HXX_INCLUDED

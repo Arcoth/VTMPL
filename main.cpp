@@ -2,6 +2,7 @@
 #include "const_string.hxx"
 #include "algorithms.hxx"
 #include "type_list.hxx"
+#include "random.hxx"
 
 #include <algorithm>
 #include <iterator>
@@ -46,9 +47,11 @@ int main()
 
 	static_assert( find<type_list<char, int>, int>::value == 1 , "" );
 
-	static_assert( or_matcher<expr>::matches<STRING("a")>::value , "" );
-	static_assert( !or_matcher<expr>::matches<STRING("foo")>::value , "" );
+	static_assert( or_matcher<expr>::matches<VTMPL_STRING("a")>::value , "" );
+	static_assert( !or_matcher<expr>::matches<VTMPL_STRING("foo")>::value , "" );
 
 	std::cout << "Rads of first 30 numbers: ";
 	copy<generate<30, functions::from_function_ptr<unsigned, &rad>::function>>( std::ostream_iterator<unsigned>{std::cout, " "} );
+
+	std::cout << "A compile-time random number: " << rand();
 }

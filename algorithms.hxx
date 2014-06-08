@@ -9,6 +9,7 @@
 #include "value_list.hxx"
 #include "index_list.hxx"
 #include "type_list.hxx"
+#include "utility.hxx"
 
 namespace vtmpl
 {
