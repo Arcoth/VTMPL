@@ -95,6 +95,9 @@ namespace vtmpl
 
 		sconst size_type find( value_type c )
 		{ return _find_impl( c, 0 ); }
+
+		sconst value_type back() { return array[length-1]; }
+		sconst value_type front() { return array[0]; }
 	};
 
 	template <typename Type,
@@ -114,7 +117,10 @@ namespace vtmpl
 	template< typename T, typename T2 >
 	using equal = std::is_same<T, T2>;
 
-
+	template< typename List, typename List::value_type V >
+	struct push_back;
+	template< typename ValT, ValT ... values, ValT V >
+	struct push_back<value_list<ValT, values...>, V> : value_list<ValT, values..., V> {};
 }
 
 #endif // VALUE_LIST_HXX_INCLUDED

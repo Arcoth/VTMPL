@@ -180,20 +180,20 @@ namespace vtmpl
 	namespace functions
 	{
 		#define DEFINE_FO( name, ... )                                             \
-			template< typename T, T a>                                           \
+			template< typename T, T b>                                           \
 			struct name                                                          \
 			{                                                                    \
-				template<typename ValueT, typename ValueT::value_type b = ValueT::value>                                                  \
-				struct function : std::integral_constant<T, (__VA_ARGS__)> {}; \
+				template<typename V, V a>                                                  \
+				struct function : std::integral_constant<V, (__VA_ARGS__)> {}; \
 			}
 
 
-		DEFINE_FO( add     ,  b + a );
-		DEFINE_FO( bit_xor ,  b ^ a );
-		DEFINE_FO( bit_and ,  b & a );
-		DEFINE_FO( bit_or  ,  b | a );
-		DEFINE_FO( multiply,  b * a );
-		DEFINE_FO( modulo  ,  b % a );
+		DEFINE_FO( add     ,  a + b );
+		DEFINE_FO( bit_xor ,  a ^ b );
+		DEFINE_FO( bit_and ,  a & b );
+		DEFINE_FO( bit_or  ,  a | b );
+		DEFINE_FO( multiply,  a * b );
+		DEFINE_FO( modulo  ,  a % b );
 
 
 		#undef DEFINE_FO
@@ -211,6 +211,14 @@ namespace vtmpl
 		{
 			template< typename V, V b >
 			struct function : std::integral_constant<V, func(b)> {};
+		};
+
+		template< template<typename FV, FV> class first,
+		          template<typename FV, FV> class second >
+		struct chain
+		{
+			template< typename T, T a >
+			struct function : std::integral_constant<T, second<T, first<T, a>::value>::value> {};
 		};
 	}
 
