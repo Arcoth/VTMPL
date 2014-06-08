@@ -12,7 +12,7 @@
 namespace vtmpl
 {
 
-	template< typename format = VTMPL_STRING("SsMmHh") >
+	template< typename format = VTMPL_STRING("HhMmSs") >
 	constexpr std::uintmax_t time()
 	{
 		using str = VTMPL_STRING( __TIME__ );
@@ -26,7 +26,10 @@ namespace vtmpl
 		for( auto c : format::array )
 		{
 			rval *= 10;
-			switch(c)
+
+			if( isdigit(c) )
+				rval += c - '0';
+			else switch(c)
 			{
 				case 'H': rval += Hh / 10; break;
 				case 'h': rval += Hh % 10; break;
