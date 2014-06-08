@@ -7,7 +7,6 @@
 #define RANDOM_HXX_INCLUDED
 
 #include "parsers.hxx"
-#include "time.hxx"
 
 namespace vtmpl
 {
@@ -16,7 +15,7 @@ namespace vtmpl
 	template< std::uintmax_t c = 25214903917,
 	          std::uintmax_t a = 11,
 	          std::uintmax_t m = (1ull << 48) >
-	constexpr std::uintmax_t rand48( std::uintmax_t state = time() )
+	constexpr std::uintmax_t rand48( std::uintmax_t state )
 	{
 		return (state * c + a) % m;
 	}
