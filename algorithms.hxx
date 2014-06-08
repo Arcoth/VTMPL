@@ -175,6 +175,19 @@ namespace vtmpl
 	struct generate<N, generator, value_list<V, values...>> :
 		value_list< V, generator<V, values>::value... > {};
 
+	/// generate: Use to generate a list with a function which takes the preceding list element as an argument to generate the next one
+
+	template< index_type N, template<typename FV, FV> class Generator, typename List >
+	struct generate_recursive :
+		generate_recursive< N-1, Generator, eval<push_back<List, Generator<typename List::value_type, List::back()>::value>> > {};
+
+	template< index_type N, template<typename FV, FV> class Generator, typename T >
+	struct generate_recursive<N, Generator, value_list<T>> :
+		generate_recursive<N-1, Generator, value_list<T, Generator<T, (T)0>::value>> {};
+
+	template< template<typename FV, FV> class Generator, typename List >
+	struct generate_recursive<0, Generator, List> : sub_list<List, 1> {};
+
 	/// predefined function objects (for transform):
 
 	namespace functions
