@@ -1,5 +1,5 @@
 VTMPL - Variadic Template Meta Programming Library
-====
+===
 
 This is a template meta programming library which uses the powerful variadic template feature introduced into C++ with the latest official C++ standard, ISO C++11.
 
