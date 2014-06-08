@@ -3,6 +3,7 @@
 #include "algorithms.hxx"
 #include "type_list.hxx"
 #include "random.hxx"
+#include "time.hxx"
 
 #include <algorithm>
 #include <iterator>

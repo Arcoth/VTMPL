@@ -35,7 +35,8 @@ namespace vtmpl
 	template< typename CharT, CharT... chs >
 	vtmpl::value_list<CharT, chs...> operator"" _vtmpl_const_string_udl();
 
-	#define VTMPL_STRING(str) decltype( str##_vtmpl_const_string_udl )
+	#define VTMPL_STRING_IMPL(str) decltype( str##_vtmpl_const_string_udl )
+	#define VTMPL_STRING(str) VTMPL_STRING_IMPL(str)
 
 #else
 
