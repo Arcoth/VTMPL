@@ -13,7 +13,7 @@
 namespace vtmpl
 {
 
-	template<typename T>
+	template<typename T = void>
 	struct identity
 	{
 		using type = T;

@@ -42,7 +42,7 @@ constexpr unsigned rad( unsigned b )
 
 int main()
 {
-	using expr = STRING("a|b");
+	using expr = VTMPL_STRING("a|b");
 
 	static_assert( find<type_list<char, int>, int>::value == 1 , "" );
 

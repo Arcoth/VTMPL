@@ -19,9 +19,14 @@ namespace vtmpl
 
 		using value_type = Type;
 
-		sconst value_type array[]{ args... };
-
 	private:
+
+		using array_type = cond<length != 0, value_type[], identity<>>;
+
+	public:
+
+		sconst array_type array{ args... };
+
 
 #if __cplusplus > 201103 || defined VTMPL_ENABLE_CPP1Y
 
@@ -94,7 +99,7 @@ namespace vtmpl
 
 	template <typename Type,
 	          Type... args>
-	constexpr Type value_list<Type, args...>::array[];
+	constexpr typename value_list<Type, args...>::array_type value_list<Type, args...>::array;
 
 	template<typename> struct nt_array_from;
 	template<typename T, T... vals>

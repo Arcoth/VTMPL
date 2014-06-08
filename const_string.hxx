@@ -35,24 +35,24 @@ namespace vtmpl
 	template< typename CharT, CharT... chs >
 	vtmpl::value_list<CharT, chs...> operator"" _vtmpl_const_string_udl();
 
-	#define STRING(str) decltype( str##_vtmpl_const_string_udl )
+	#define VTMPL_STRING(str) decltype( str##_vtmpl_const_string_udl )
 
 #else
 
-	#define SPLIT_1(s, x) ( x < sizeof(s) ? s[x] : '\0' )
-	#define SPLIT_4(s, x) SPLIT_1  (s, x), SPLIT_1  (s, x+1)  , SPLIT_1  (s, x+2)  , SPLIT_1  (s, x+3)
-	#define SPLIT_16(s, x) SPLIT_4  (s, x), SPLIT_4  (s, x+4)  , SPLIT_4  (s, x+8)  , SPLIT_4  (s, x+12)
-	#define SPLIT_64(s, x) SPLIT_16 (s, x), SPLIT_16 (s, x+16) , SPLIT_16 (s, x+32) , SPLIT_16 (s, x+48)
-	#define SPLIT_256(s, x) SPLIT_64 (s, x), SPLIT_64 (s, x+64) , SPLIT_64 (s, x+128), SPLIT_64 (s, x+194)
-	#define SPLIT_1024(s, x) SPLIT_256(s, x), SPLIT_256(s, x+256), SPLIT_256(s, x+512), SPLIT_256(s, x+768)
+	#define VTMPL_SPLIT_1(s, x) ( x < sizeof(s) ? s[x] : '\0' )
+	#define VTMPL_SPLIT_4(s, x) VTMPL_SPLIT_1  (s, x), VTMPL_SPLIT_1  (s, x+1)  , VTMPL_SPLIT_1  (s, x+2)  , VTMPL_SPLIT_1  (s, x+3)
+	#define VTMPL_SPLIT_16(s, x) VTMPL_SPLIT_4  (s, x), VTMPL_SPLIT_4  (s, x+4)  , VTMPL_SPLIT_4  (s, x+8)  , VTMPL_SPLIT_4  (s, x+12)
+	#define VTMPL_SPLIT_64(s, x) VTMPL_SPLIT_16 (s, x), VTMPL_SPLIT_16 (s, x+16) , VTMPL_SPLIT_16 (s, x+32) , VTMPL_SPLIT_16 (s, x+48)
+	#define VTMPL_SPLIT_256(s, x) VTMPL_SPLIT_64 (s, x), VTMPL_SPLIT_64 (s, x+64) , VTMPL_SPLIT_64 (s, x+128), VTMPL_SPLIT_64 (s, x+194)
+	#define VTMPL_SPLIT_1024(s, x) VTMPL_SPLIT_256(s, x), VTMPL_SPLIT_256(s, x+256), VTMPL_SPLIT_256(s, x+512), VTMPL_SPLIT_256(s, x+768)
 
 	//!: Use this macro to create a const_string from a string literal or constant pointer
 
-	#define STRING_IMPL(str, n) vtmpl::rtrim<vtmpl::const_string<SPLIT_##n(str, 0)>>::type
+	#define VTMPL_STRING_IMPL(str, n) vtmpl::rtrim<vtmpl::const_string<VTMPL_SPLIT_##n(str, 0)>>::type
 
-	#define STRING(str) STRING_IMPL(str, 64)
-	#define STRING_256(str) STRING_IMPL(str, 256)
-	#define STRING_1024(str) STRING_IMPL(str, 1024)
+	#define VTMPL_STRING(str) VTMPL_STRING_IMPL(str, 64)
+	#define VTMPL_STRING_256(str) VTMPL_STRING_IMPL(str, 256)
+	#define VTMPL_STRING_1024(str) VTMPL_STRING_IMPL(str, 1024)
 
 #endif
 

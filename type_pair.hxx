@@ -7,8 +7,6 @@
 #ifndef TYPE_PAIR_HXX_INCLUDED
 #define TYPE_PAIR_HXX_INCLUDED
 
-#include "identity.hxx"
-
 namespace vtmpl
 {
 	template<typename A, typename B, typename C = void, typename D = void, typename E = void>
