@@ -13,5 +13,7 @@ If you know your compiler supports it (but doesn't define the __cplusplus macro 
 
 This library is distributed under the Boost Software License (see LICENSE_1_0.txt).
 
-**Special thanks to Volkard Henkel for the Multiply-with-Carry PRNG in random.hxx.**
+**Special thanks to
+- Volkard Henkel for the Multiply-with-Carry PRNG in random.hxx.
+- camper @ http://www.c-plusplus.de/ for the binary recursion definition of make_index_list.**
 
