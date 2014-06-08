@@ -22,10 +22,10 @@ namespace vtmpl
 			*out++ = c;
 	}
 
-	template <typename str,
+	template <typename list,
 	          size_type pos,
 	          size_type len = npos,
-	          typename = eval<make_index_list<min(len, str::length - pos)>>> struct sub_list;
+	          typename = eval<make_index_list<min(len, list::length - pos)>>> struct sub_list;
 
 	template <typename Type, Type ... args,
 	          size_type pos,
@@ -186,7 +186,7 @@ namespace vtmpl
 		generate_recursive<N-1, Generator, value_list<T, Generator<T, (T)0>::value>> {};
 
 	template< template<typename FV, FV> class Generator, typename List >
-	struct generate_recursive<0, Generator, List> {};
+	struct generate_recursive<0, Generator, List> : List {};
 
 	/// predefined function objects (for transform):
 
