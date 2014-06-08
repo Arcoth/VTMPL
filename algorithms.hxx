@@ -18,7 +18,7 @@ namespace vtmpl
 	          typename OutputIterator >
 	void copy( OutputIterator out )
 	{
-		for( auto c : List::array )
+		for( auto c : eval<List>::array )
 			*out++ = c;
 	}
 
@@ -152,70 +152,73 @@ namespace vtmpl
 	/// transform: Use to apply a function to a list of values
 
 	template <typename List,
-	          template<typename V, V> class,
+	          class,
 	          typename = eval<make_index_list<List::length>>> struct transform;
 
 	template <typename V,
 	          V... values,
-	          template<typename FV, FV> class function,
+	          class function,
 	          index_type... enums>
 	struct transform<value_list<V, values...>, function, index_list<enums...>> :
-		index_list< function<V, value_list<V, values...>::array[enums]>::value... > {};
+		value_list< V, function::template function<V, value_list<V, values...>::array[enums]>::value... > {};
 
 	/// generate: Use to generate a list with a function which takes an index as an argument
 
 	template <size_type N,
-	          template<typename T, T> class generator,
+	          class generator,
 	          typename = eval<make_index_list<N>>> struct generate;
 
 	template <size_type N,
-	          template<typename FV, FV> class generator,
+	          class generator,
 	          typename V,
 	          V... values>
 	struct generate<N, generator, value_list<V, values...>> :
-		value_list< V, generator<V, values>::value... > {};
+		value_list< V, generator::template function<V, values>::value... > {};
 
 	/// generate_recursive: Use to generate a list with a function which takes the preceding list element as an argument to generate the next one
 
-	template< index_type N, template<typename FV, FV> class Generator, typename List >
+	template< index_type N, class Generator, typename List >
 	struct generate_recursive :
-		generate_recursive< N-1, Generator, eval<push_back<List, Generator<typename List::value_type, List::back()>::value>> > {};
+		generate_recursive< N-1, Generator, eval<push_back<List, Generator::template function<typename List::value_type, List::back()>::value>> > {};
 
-	template< index_type N, template<typename FV, FV> class Generator, typename T >
+	template< index_type N, class Generator, typename T >
 	struct generate_recursive<N, Generator, value_list<T>> :
-		generate_recursive<N-1, Generator, value_list<T, Generator<T, (T)0>::value>> {};
+		generate_recursive<N-1, Generator, value_list<T, Generator::template function<T, (T)0>::value>> {};
 
-	template< template<typename FV, FV> class Generator, typename List >
+	template< class Generator, typename List >
 	struct generate_recursive<0, Generator, List> : List {};
 
-	/// predefined function objects (for transform):
+	/// predefined function objects
 
 	namespace functions
 	{
-		#define DEFINE_FO( name, ... )                                             \
-			template< typename T, T b>                                           \
-			struct name                                                          \
-			{                                                                    \
-				template<typename V, V a>                                                  \
+		#define DEFINE_FO( name, ... ) \
+			template< typename T, T b> \
+			struct name \
+			{ \
+				template<typename V, V a> \
 				struct function : std::integral_constant<V, (__VA_ARGS__)> {}; \
-			}
+			};
 
 
-		DEFINE_FO( add     ,  a + b );
-		DEFINE_FO( bit_xor ,  a ^ b );
-		DEFINE_FO( bit_and ,  a & b );
-		DEFINE_FO( bit_or  ,  a | b );
-		DEFINE_FO( multiply,  a * b );
-		DEFINE_FO( modulo  ,  a % b );
+		DEFINE_FO( add , a + b )
+		DEFINE_FO( bit_xor , a ^ b )
+		DEFINE_FO( bit_and , a & b )
+		DEFINE_FO( bit_or , a | b )
+		DEFINE_FO( multiply, a * b )
+		DEFINE_FO( modulo , a % b )
 
 
 		#undef DEFINE_FO
 		#define DEFINE_FO( name, ... ) \
-			template<typename T, T a> struct name : std::integral_constant<T, (__VA_ARGS__)> {}
+			struct name \
+			{ \
+				template<typename T, T a> struct function : std::integral_constant<T, (__VA_ARGS__)> {}; \
+			};
 
-		DEFINE_FO( square , a*a );
-		DEFINE_FO( negate , -a );
-		DEFINE_FO( bit_not, ~a );
+		DEFINE_FO( square , a*a )
+		DEFINE_FO( negate , -a )
+		DEFINE_FO( bit_not, ~a )
 
 		#undef DEFINE_FO
 
@@ -241,7 +244,7 @@ namespace vtmpl
 
 	template<typename Type, Type ... args, Type to_find>
 	struct rtrim<value_list<Type, args...>, to_find> :
-		sub_list< value_list<Type, args...>, 0, value_list<Type, args...>::find(to_find) > {};
+	sub_list< value_list<Type, args...>, 0, value_list<Type, args...>::find(to_find) > {};
 }
 
 #endif // ALGORITHMS_HXX_INCLUDED
