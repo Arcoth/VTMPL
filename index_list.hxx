@@ -14,6 +14,8 @@
 namespace vtmpl
 {
 
+	/// Credit for this binary recursion approach goes to camper @ http://www.c-plusplus.de/
+
 	template<index_type ... args>
 	using index_list = value_list<index_type, args...>;
 
