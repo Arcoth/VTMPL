@@ -53,5 +53,5 @@ int main()
 	std::cout << "Rads of first 30 numbers: ";
 	copy<generate<30, functions::from_function_ptr<unsigned, &rad>::function>>( std::ostream_iterator<unsigned>{std::cout, " "} );
 
-	std::cout << "A compile-time random number: " << rand();
+	std::cout << "A compile-time random number: " << rand48();
 }
