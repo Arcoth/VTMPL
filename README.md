@@ -15,6 +15,6 @@ Same applies to STRING_LITERAL_OPERATOR_TEMPLATES, which is used for the definit
 This library is distributed under the Boost Software License (see LICENSE_1_0.txt).
 
 **Special thanks to**
-- **Volkard Henkel** for the Multiply-with-Carry PRNG in random.hxx.
-- **camper** @ http://www.c-plusplus.de/ for the binary recursion definition of make_index_list.
+- Volkard Henkel (volkard @ http://www.c-plusplus.de/) for the Multiply-with-Carry PRNG in random.hxx.
+- camper @ http://www.c-plusplus.de/ for the binary recursion definition of make_index_list.
 
