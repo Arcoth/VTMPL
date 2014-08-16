@@ -37,7 +37,11 @@ namespace vtmpl
 	using tenth_choice   = rank<9>;
 
 	using default_choice = rank<overload_rank_limit>;
-	rank<0> ranked_call;
+	
+	constexpr rank<0> ranked_call()
+	{
+		return {};
+	}
 }
 
 #endif // OVERLOAD_RANKER_HXX_INCLUDED
