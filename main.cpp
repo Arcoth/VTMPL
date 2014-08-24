@@ -1,5 +1,5 @@
 #include "index_list.hxx"
-#include "const_string.hxx"
+#include "string.hxx"
 #include "algorithms.hxx"
 #include "type_list.hxx"
 #include "random.hxx"
