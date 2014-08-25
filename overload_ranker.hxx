@@ -10,6 +10,8 @@
 /** If you want to gain independence from this header, define index_type in the namespace vtmpl
     as a integer type. */
 
+#include <utility> // std::forward for the macro
+
 namespace vtmpl
 {
 
@@ -37,11 +39,16 @@ namespace vtmpl
 	using tenth_choice   = rank<9>;
 
 	using default_choice = rank<overload_rank_limit>;
-	
+
 	constexpr rank<0> ranked_call()
 	{
 		return {};
 	}
+
+	#define VTMPL_DEFINE_OR_FORWARDER(name, impl)                                   \
+		template <typename... Args>                                               \
+		auto name( Args&&... args )                                               \
+		AUTO_RETURN( impl(::vtmpl::ranked_call(), ::std::forward<Args>(args)...) )
 }
 
 #endif // OVERLOAD_RANKER_HXX_INCLUDED

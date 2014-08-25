@@ -22,7 +22,7 @@ namespace vtmpl
 	template< typename, typename > struct find;
 	template< typename to_find, typename ... Args >
 	struct find<type_list<Args...>, to_find> :
-		size_< value_list<bool, equal<Args, to_find>::value...>::find(true) > {};
+		size_< value_list<bool, std::is_same<Args, to_find>::value...>::find(true) > {};
 
 	template< typename List, std::size_t i >
 	using type_list_at = typename std::tuple_element<i, typename List::std_tuple>::type;

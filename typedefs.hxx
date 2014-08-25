@@ -19,9 +19,9 @@ namespace vtmpl
 		using type = T;
 	};
 
-	using size_type = unsigned;
+	using size_type = unsigned long;
 
-	using index_type = int;
+	using index_type = long;
 
 	template<typename T>
 	using eval = typename T::type;
@@ -48,6 +48,7 @@ namespace vtmpl
 
 }
 
+#define AUTO_RETURN(...) -> decltype(__VA_ARGS__) {return (__VA_ARGS__);}
 
 #define sconst static constexpr
 

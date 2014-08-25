@@ -114,9 +114,6 @@ namespace vtmpl
 	template<typename T, T... vals>
 	constexpr T nt_array_from<value_list<T, vals...>>::array[];
 
-	template< typename T, typename T2 >
-	using equal = std::is_same<T, T2>;
-
 	template< typename List, typename List::value_type V >
 	struct push_back;
 	template< typename ValT, ValT ... values, ValT V >
