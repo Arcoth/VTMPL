@@ -34,7 +34,7 @@ namespace vtmpl
 
 	#define VTMPL_DEFINE_FORWARDER(name, impl)              \
 		template <typename... Args>                              \
-		auto name( Args&&... args )                              \
+		constexpr auto name( Args&&... args )                              \
 		VTMPL_AUTO_RETURN( (impl)(::std::forward<Args>(args)...) )
 
 	#define VTMPL_AUTO_RETURN(...) -> decltype(__VA_ARGS__) {return (__VA_ARGS__);}

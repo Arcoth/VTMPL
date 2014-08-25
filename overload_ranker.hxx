@@ -52,12 +52,12 @@ namespace vtmpl
 
 	#define VTMPL_DEFINE_RANKED_FORWARDER(rank, name, impl)          \
 		template <typename... Args>                                \
-		auto name( ::vtmpl::rank##_choice, Args&&... args )                 \
+		constexpr auto name( ::vtmpl::rank##_choice, Args&&... args )                 \
 		VTMPL_AUTO_RETURN( (impl)(::std::forward<Args>(args)...) )
 
 	#define VTMPL_DEFINE_RANKED_CALLER(name, impl)                 \
 		template <typename... Args>                              \
-		auto name( Args&&... args )                              \
+		constexpr auto name( Args&&... args )                              \
 		VTMPL_AUTO_RETURN( (impl)(::vtmpl::ranked_call(), ::std::forward<Args>(args)...) )
 }
 
