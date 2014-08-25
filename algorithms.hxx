@@ -140,13 +140,13 @@ namespace vtmpl
 	template< typename List, typename Check, size_type pos >
 	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos && pos == List::length-1>>
 	{
-		sconst auto value = npos;
+		VTMPL_SCONST auto value = npos;
 	};
 
 	template< typename List, typename Check, size_type pos >
 	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos>>
 	{
-		sconst auto value = pos;
+		VTMPL_SCONST auto value = pos;
 	};
 
 	/// transform: Use to apply a function to a list of values

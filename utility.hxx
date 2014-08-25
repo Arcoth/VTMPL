@@ -13,11 +13,6 @@
 namespace vtmpl
 {
 
-	struct non_literal
-	{
-		non_literal(int);
-	};
-
 	constexpr bool isdigit( char c )
 	{
 		return c >= '0' && c <= '9';
@@ -36,6 +31,13 @@ namespace vtmpl
 	}
 
 	#define VTMPL_ASSERT( B, MSG ) ( B? 0 : throw ::std::invalid_argument{MSG})
+
+	#define VTMPL_DEFINE_FORWARDER(name, impl)              \
+		template <typename... Args>                              \
+		auto name( Args&&... args )                              \
+		VTMPL_AUTO_RETURN( (impl)(::std::forward<Args>(args)...) )
+
+	#define VTMPL_AUTO_RETURN(...) -> decltype(__VA_ARGS__) {return (__VA_ARGS__);}
 
 }
 

@@ -42,7 +42,7 @@ constexpr unsigned rad( unsigned b )
 	return res;
 }
 
-int main()
+/*int main()
 {
 	using expr = VTMPL_STRING("a|b");
 
@@ -60,4 +60,4 @@ int main()
 	                                 value_list<std::uintmax_t, time()> >;
 
 	copy< transform<eval<list>, functions::modulo<std::uintmax_t, 10>> >( std::ostream_iterator<std::uintmax_t>(std::cout, " ") );
-}
+}*/

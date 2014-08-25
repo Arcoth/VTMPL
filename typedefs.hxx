@@ -48,9 +48,7 @@ namespace vtmpl
 
 }
 
-#define AUTO_RETURN(...) -> decltype(__VA_ARGS__) {return (__VA_ARGS__);}
-
-#define sconst static constexpr
+#define VTMPL_SCONST static constexpr
 
 #ifndef VTMPL_RELAX_CONSTEXPR_FUNC
 	#define VTMPL_RELAX_CONSTEXPR_FUNC (__cplusplus > 201103 && (!defined __GNUC__ || __GNUC__ > 4)) // GCC does not support Relaxing requirements on constexpr functions yet
