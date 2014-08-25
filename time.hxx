@@ -6,13 +6,13 @@
 #ifndef TIME_HXX_INCLUDED
 #define TIME_HXX_INCLUDED
 
-#include "const_string.hxx"
+#include "string.hxx"
 #include "parsers.hxx"
 
 namespace vtmpl
 {
 
-	template< typename format = VTMPL_STRING("HhMmSs") >
+	template <typename format = VTMPL_STRING("HhMmSs")>
 	constexpr std::uintmax_t time()
 	{
 		using str = VTMPL_STRING( __TIME__ );

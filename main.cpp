@@ -1,5 +1,5 @@
 #include "index_list.hxx"
-#include "const_string.hxx"
+#include "string.hxx"
 #include "algorithms.hxx"
 #include "type_list.hxx"
 #include "random.hxx"
@@ -52,12 +52,12 @@ int main()
 	static_assert( !or_matcher<expr>::matches<VTMPL_STRING("foo")>::value , "" );
 
 	std::cout << "Rads of first 30 numbers: ";
-	copy<generate<30, functions::from_function_ptr<unsigned, &rad>>>( std::ostream_iterator<unsigned>{std::cout, " "} );
+	copy<generate<30, functions::from_function_ptr<unsigned, &rad>>>( std::ostream_iterator<unsigned>(std::cout, " ") );
 
 
 	std::cout << "\nTwenty pseudo-random numbers: ";
 	using list = generate_recursive< 20, functions::from_function_ptr<std::uintmax_t, &rand>,
 	                                 value_list<std::uintmax_t, time()> >;
 
-	copy< transform<eval<list>, functions::modulo<std::uintmax_t, 10>> >( std::ostream_iterator<std::uintmax_t>{std::cout, " "} );
+	copy< transform<eval<list>, functions::modulo<std::uintmax_t, 10>> >( std::ostream_iterator<std::uintmax_t>(std::cout, " ") );
 }
