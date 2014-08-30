@@ -6,7 +6,6 @@
 #ifndef ALGORITHMS_HXX_INCLUDED
 #define ALGORITHMS_HXX_INCLUDED
 
-#include "value_list.hxx"
 #include "index_list.hxx"
 #include "type_list.hxx"
 #include "utility.hxx"
@@ -22,35 +21,29 @@ namespace vtmpl
 			*out++ = c;
 	}
 
-	template <typename list,
+	/// sub_list: Creates a sub-list of a given value_list, given start pos and length
+
+	template <typename List,
 	          size_type pos,
 	          size_type len = npos,
-	          typename = eval<make_index_list<min(len, list::length - pos)>>> struct sub_list;
+	          typename = eval<make_index_list<min(len, List::length - pos)>>> struct sub_list;
 
-	template <typename Type, Type ... args,
+	template <typename List,
 	          size_type pos,
 	          size_type len,
 	          index_type... indices>
-	struct sub_list<value_list<Type, args...>,
-	                pos, len,
+	struct sub_list<List, pos, len,
 	                index_list<indices...>> :
-		value_list<Type, value_list<Type, args...>::array[pos + indices]...> {};
+		list_with_type<List, List::array[pos + indices]...> {};
 
 	/// split_at: Splits the list into to sublists as specified by the position. The value at position pos is in the first list.
 
-	template <typename list,
+	template <typename List,
 	          size_type pos,
-	          bool keep_delim = true> struct split_at;
-
-	template <typename val_t,
-	          val_t ... values,
-	          size_type pos,
-	          bool keep_delim>
-	struct split_at<value_list<val_t, values...>,
-	                pos,
-	                keep_delim> :
-		type_list< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
-	                 eval<sub_list<value_list<val_t, values...>, pos + keep_delim, sizeof...(values) - pos - keep_delim>> > {};
+	          bool keep_separator = true>
+	struct split_at :
+		type_list< eval<sub_list<List, 0, pos>>,
+	                 eval<sub_list<List, pos + !keep_separator>> > {};
 
 	/// concat/concat_3
 
@@ -64,7 +57,7 @@ namespace vtmpl
 	               value_list<val_t, second...>> :
 		value_list<val_t, first..., second...> {};
 
-	// to reduce recursion
+	// to avoid recursion
 	template < typename val_t,
 	           val_t ... first,
 	           val_t ... second,
@@ -74,116 +67,93 @@ namespace vtmpl
 			    value_list<val_t, third...>> :
 		value_list<val_t, first..., second..., third...> {};
 
-	/// replace
+	// list operations
 
-	template <typename list,
-	          size_type pos,
-	          typename list::value_type new_val>
-	struct replace;
-
-	template <typename val_t, val_t... values,
-	          size_type pos,
-	          val_t new_val>
-	struct replace<value_list<val_t, values...>,
-	               pos,
-	               new_val> :
-		concat_3< eval<sub_list<value_list<val_t, values...>, 0, pos>>,
-	               value_list<val_t, new_val>,
-	               eval<sub_list<value_list<val_t, values...>, pos + 1, value_list<val_t, values...>::length - pos - 1>> > {};
-
-	/// remove_if_not
-
-	template< typename T,
-	          typename,
-	          typename = value_list<typename T::value_type> >
-	struct remove_if_not;
-
-	template< typename T,
-	          T... seq,
-	          T... not_erase,
-	          T... so_far >
-	struct remove_if_not< value_list<T, seq...>,
-	                      value_list<T, not_erase...>,
-	                      value_list<T, so_far...> >
+	template <typename List, size_type pos>
+	struct erase
 	{
-		using split_pair = split_at<value_list<T, seq...>, sizeof...(seq)/2>;
+		using pair = eval< split_at<List, pos, false> >;
 
-		using first  = remove_if_not< typename split_pair::first , value_list<T, not_erase...>, value_list<T, so_far...> >;
-		using second = remove_if_not< typename split_pair::second, value_list<T, not_erase...>, value_list<T, so_far...> >;
-
-		using type = eval<concat<eval<first>, eval<second>>>;
+		using type = eval< concat<type_list_at<pair, 0>, type_list_at<pair, 1>> >;
 	};
 
-	template< typename T,
-	          T seq,
-	          T... not_erase,
-	          T... so_far >
-	struct remove_if_not< value_list<T, seq>,
-	                      value_list<T, not_erase...>,
-	                      value_list<T, so_far...> >  :  cond< value_list<T, not_erase...>::find(seq) != npos,
-	                                                           value_list<T, seq>, value_list<T> > {};
-	template< typename T,
-		    T... not_erase,
-		    T... so_far >
-	struct remove_if_not< value_list<T>,
-	                      value_list<T, not_erase...>,
-	                      value_list<T, so_far...> >  :  value_list<T, so_far...> {};
+	template< typename List, typename List::value_type V >
+	using push_back = eval< concat<List, list_with_type<List, V>> >;
+
+	template <typename List>
+	using pop_back  = eval< sub_list< List, 0, List::length-1> >;
+
+	namespace detail {
+		template <typename List, size_type pos, typename List::value_type value, bool keep>
+		struct insert
+		{
+			using pair = eval< split_at<List, pos, keep> >;
+
+			using type = eval< concat_3<typename pair::first,
+							    list_with_type<List, value>,
+							    typename pair::second> >;
+		};
+	}
+
+	template <typename List, size_type pos, typename List::value_type value>
+	using assign = eval< detail::insert<List, pos, value, false> >;
+	template <typename List, size_type pos, typename List::value_type value>
+	using insert = eval< detail::insert<List, pos, value, true> >;
 
 	/// find_first_not_of
 
-	template <typename, typename, size_type = 0, typename=void> struct find_first_not_of;
+	#if VTMPL_RELAX_CONSTEXPR_FUNC == 1
 
-	template< typename List, typename Check, size_type pos >
-	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos && pos != List::length-1>> :
-		find_first_not_of<List, Check, pos+1> {};
-
-	template< typename List, typename Check, size_type pos >
-	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) != npos && pos == List::length-1>>
+	template <typename List, typename CheckList>
+	VTMPL_SCONST size_type find_first_not_of( size_type start_pos = 0 )
 	{
-		VTMPL_SCONST auto value = npos;
-	};
+		for (size_type s = start_pos; s != List::length; ++s )
+			if (CheckList::find(List::array[s]) == npos)
+				return s;
 
-	template< typename List, typename Check, size_type pos >
-	struct find_first_not_of<List, Check, pos, requires<Check::find(List::array[pos]) == npos>>
+		return npos;
+	}
+
+	template <typename List, typename CheckList>
+	VTMPL_SCONST size_type find_first_of( size_type start_pos = 0 )
 	{
-		VTMPL_SCONST auto value = pos;
-	};
+		for (size_type s = start_pos; s != List::length; ++s )
+			if (CheckList::find(List::array[s]) != npos)
+				return s;
+
+		return npos;
+	}
+
+	#endif
 
 	/// transform: Use to apply a function to a list of values
 
-	template <typename List,
-	          class,
-	          typename = eval<make_index_list<List::length>>> struct transform;
+	template <typename, class> struct transform;
 
-	template <typename V,
-	          V... values,
-	          class function,
-	          index_type... enums>
-	struct transform<value_list<V, values...>, function, index_list<enums...>> :
-		value_list< V, function::template function<V, value_list<V, values...>::array[enums]>::value... > {};
+	template <typename V, V... values,
+	          class function>
+	struct transform<value_list<V, values...>, function> :
+		value_list< V, function()(values)... > {};
 
 	/// generate: Use to generate a list with a function which takes an index as an argument
 
-	template <size_type N,
-	          class generator,
-	          typename = eval<make_index_list<N>>> struct generate;
+	template <size_type N, class generator>
+	using generate = transform<eval<make_index_list<N>>, generator>;
 
-	template <size_type N,
-	          class generator,
-	          typename V,
-	          V... values>
-	struct generate<N, generator, value_list<V, values...>> :
-		value_list< V, generator::template function<V, values>::value... > {};
+	/// rtrim: cuts of all values after a specific one
+
+	template<typename List, typename List::value_type to_find = typename List::value_type()>
+	using rtrim = eval< sub_list< List, 0, List::find(to_find) > >;
 
 	/// generate_recursive: Use to generate a list with a function which takes the preceding list element as an argument to generate the next one
 
-	template< index_type N, class Generator, typename List >
+	template< size_type N, class Generator, typename List >
 	struct generate_recursive :
-		generate_recursive< N-1, Generator, eval<push_back<List, Generator::template function<typename List::value_type, List::back()>::value>> > {};
+		generate_recursive< N-1, Generator, push_back<List, Generator()(List::back())> > {};
 
-	template< index_type N, class Generator, typename T >
+	template< size_type N, class Generator, typename T >
 	struct generate_recursive<N, Generator, value_list<T>> :
-		generate_recursive<N-1, Generator, value_list<T, Generator::template function<T, (T)0>::value>> {};
+		generate_recursive<N-1, Generator, value_list<T, Generator()( (T)0 )>> {};
 
 	template< class Generator, typename List >
 	struct generate_recursive<0, Generator, List> : List {};
@@ -192,12 +162,18 @@ namespace vtmpl
 
 	namespace functions
 	{
-		#define DEFINE_FO( name, ... ) \
-			template< typename T, T b> \
+		#define DEFINE_UFO( name, ... ) \
 			struct name \
 			{ \
-				template<typename V, V a> \
-				struct function : std::integral_constant<V, (__VA_ARGS__)> {}; \
+				template<typename U> \
+				constexpr auto operator()(U a) VTMPL_AUTO_RETURN(__VA_ARGS__) \
+			};
+
+		#define DEFINE_FO( name, ... ) \
+			struct name \
+			{ \
+				template<typename T, typename U> \
+				constexpr auto operator()(T a, U b) VTMPL_AUTO_RETURN(__VA_ARGS__) \
 			};
 
 
@@ -209,25 +185,20 @@ namespace vtmpl
 		DEFINE_FO( modulo , a % b )
 
 
-		#undef DEFINE_FO
-		#define DEFINE_FO( name, ... ) \
-			struct name \
-			{ \
-				template<typename T, T a> struct function : std::integral_constant<T, (__VA_ARGS__)> {}; \
-			};
-
-		DEFINE_FO( square , a*a )
-		DEFINE_FO( negate , -a )
-		DEFINE_FO( bit_not, ~a )
-
-		#undef DEFINE_FO
+		DEFINE_UFO( square , a*a )
+		DEFINE_UFO( negate , -a )
+		DEFINE_UFO( bit_not, ~a )
 
 		template< typename T, T(*func)( T ) >
-		struct from_function_ptr
-		{
-			template< typename V, V b >
-			struct function : std::integral_constant<V, func(b)> {};
-		};
+		DEFINE_UFO( from_function_ptr, func(a) )
+
+		template <typename FO, typename Val>
+		DEFINE_UFO( bind1st, FO()(Val::value, a) )
+		template <typename FO, typename Val>
+		DEFINE_UFO( bind2nd, FO()(a, Val::value) )
+
+		#undef DEFINE_FO
+		#undef DEFINE_UFO
 
 		template< template<typename FV, FV> class first,
 		          template<typename FV, FV> class second >
@@ -238,13 +209,6 @@ namespace vtmpl
 		};
 	}
 
-	/// rtrim: cuts of all values after a specific one
-
-	template<typename List, typename List::value_type = typename List::value_type{}> struct rtrim;
-
-	template<typename Type, Type ... args, Type to_find>
-	struct rtrim<value_list<Type, args...>, to_find> :
-	sub_list< value_list<Type, args...>, 0, value_list<Type, args...>::find(to_find) > {};
 }
 
 #endif // ALGORITHMS_HXX_INCLUDED
