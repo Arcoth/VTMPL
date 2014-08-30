@@ -1,14 +1,17 @@
 VTMPL - Variadic Template Meta Programming Library
 ---
 
-This is a template meta programming library which uses the powerful variadic template feature introduced into C++ with the latest official C++ standard, ISO C++11.
+VTMPL is a lightweight template meta programming (TMP) library which uses the powerful variadic template feature introduced into C++ with the 2011 ISO C++ standard.
 
-It makes uses of variadic templates to ease the definition of various compile-time mechanisms and is powerful yet lightweight.
-Some headers can be used on their own; they just depend on some definitions in typedefs.hxx, which you can provide yourself.
 
-Some parts are also written in C++1Y and use the "relaxing constraints on constexpr functions"-feature.
-If you know your compiler supports it (but doesn't define the __cplusplus macro greater than 201103), define the macro VTMPL_RELAX_CONSTEXPR_FUNC as 1.
-Same applies to STRING_LITERAL_OPERATOR_TEMPLATES, which is used for the definition of VTMPL_STRING.
+It makes use of parameter packs to ease the definition of various compile-time mechanisms.
+Using the random.hxx-header, you can even create pseudo random numbers at compile time, seeding it with the current time (provided by the __TIME__ macro).
+Some headers can be used on their own; they just depend on definitions in typedefs.hxx, which you can provide yourself (or copy&paste them inside the header).
+
+Parts are also written in C++14 (the latest official ISO standard) and use the
+"relaxing constraints on constexpr functions"- and "string literal operator templates"-features.
+If you know your compiler supports them (but doesn't define the __cplusplus macro greater than 201103, which indicates C++14-support),
+define the macro VTMPL_RELAX_CONSTEXPR_FUNC (or STRING_LITERAL_OPERATOR_TEMPLATES, respectively) as 1.
 
 ---
 
@@ -17,4 +20,3 @@ This library is distributed under the Boost Software License (see LICENSE_1_0.tx
 **Special thanks to**
 - Volkard Henkel (volkard @ http://www.c-plusplus.de/) for the Multiply-with-Carry PRNG in random.hxx.
 - camper @ http://www.c-plusplus.de/ for the binary recursion definition of make_index_list.
-
