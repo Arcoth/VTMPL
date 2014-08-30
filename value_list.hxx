@@ -85,8 +85,6 @@ namespace vtmpl
 
 #endif
 
-	public:
-
 		VTMPL_SCONST size_type count( value_type c )
 		{ return _count_impl( c, length - 1 ); }
 
@@ -95,6 +93,8 @@ namespace vtmpl
 
 		VTMPL_SCONST size_type find( value_type c )
 		{ return _find_impl( c, 0 ); }
+
+	public:
 
 		VTMPL_SCONST value_type back() { return array[length-1]; }
 		VTMPL_SCONST value_type front() { return array[0]; }
@@ -114,10 +114,18 @@ namespace vtmpl
 	template<typename T, T... vals>
 	constexpr T nt_array_from<value_list<T, vals...>>::array[];
 
-	template< typename List, typename List::value_type V >
-	struct push_back;
-	template< typename ValT, ValT ... values, ValT V >
-	struct push_back<value_list<ValT, values...>, V> : value_list<ValT, values..., V> {};
+	template<typename, typename> struct initialize;
+	template<typename Agg, typename T, T... vals>
+	struct initialize<Agg, value_list<T, vals...>>
+	{
+		VTMPL_SCONST Agg list()
+		{ return Agg{ vals... }; }
+		VTMPL_SCONST Agg value()
+		{ return Agg( vals... ); }
+	};
+
+	template <typename List, typename List::value_type... val>
+	using list_with_type = value_list<typename List::value_type, val...>;
 }
 
 #endif // VALUE_LIST_HXX_INCLUDED

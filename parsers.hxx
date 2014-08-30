@@ -6,20 +6,18 @@
 #ifndef PARSERS_HXX_INCLUDED
 #define PARSERS_HXX_INCLUDED
 
-#include "type_pair.hxx"
 #include "utility.hxx"
-#include "typedefs.hxx"
 
 #include <utility>
 
-#if VTMPL_RELAX_CONSTEXPR_FUNC
+# if !VTMPL_RELAX_CONSTEXPR_FUNC
 #
-#error \
-This file uses C++1Y-features (relaxed constraints on constexpr-functions). \
-If your compiler supports C++1Y-features, activate them through a flag (most commonly -std=c++1y). \
-Or, if your compiler lacks the macro definition, #define VTMPL_RELAX_CONSTEXPR_FUNC to 1 yourself.
+# error \
+	This file uses C++1Y-features (relaxed constraints on constexpr-functions). \
+	If your compiler supports C++1Y-features, activate them through a flag (most commonly -std=c++1y). \
+	Or, if your compiler lacks the macro definition, #define VTMPL_RELAX_CONSTEXPR_FUNC to 1 yourself.
 #
-#endif
+# endif
 
 
 namespace vtmpl

@@ -59,5 +59,5 @@ int main()
 	using list = generate_recursive< 20, functions::from_function_ptr<std::uintmax_t, &rand>,
 	                                 value_list<std::uintmax_t, time()> >;
 
-	copy< transform<eval<list>, functions::modulo<std::uintmax_t, 10>> >( std::ostream_iterator<std::uintmax_t>(std::cout, " ") );
+	copy< transform<eval<list>, functions::bind2nd<functions::modulo, uint_<10>> > >( std::ostream_iterator<std::uintmax_t>(std::cout, " ") );
 }

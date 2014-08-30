@@ -29,6 +29,9 @@ namespace vtmpl
 	template<bool B, typename T, typename F>
 	using cond = eval<std::conditional<B, T, F>>;
 
+	template<bool B, typename T = void>
+	using requires = eval< std::enable_if<B, T> >;
+
 	template<bool Val>
 	using bool_ = std::integral_constant<bool, Val>;
 
@@ -43,19 +46,21 @@ namespace vtmpl
 
 	constexpr size_type npos = std::numeric_limits<size_type>::max();
 
-	template<bool C>
-	using requires = eval<std::enable_if<C>>;
-
 }
 
-#define VTMPL_SCONST static constexpr
+# define VTMPL_SCONST static constexpr
 
-#ifndef VTMPL_RELAX_CONSTEXPR_FUNC
-	#define VTMPL_RELAX_CONSTEXPR_FUNC (__cplusplus > 201103 && (!defined __GNUC__ || __GNUC__ > 4)) // GCC does not support Relaxing requirements on constexpr functions yet
-#endif
-
-#ifndef STRING_LITERAL_OPERATOR_TEMPLATES
-	#define STRING_LITERAL_OPERATOR_TEMPLATES ( __cplusplus > 201103 )
-#endif
+# define IS_CPP1Y_OR_GREATER (__cplusplus > 201103)
+#
+# ifndef VTMPL_RELAX_CONSTEXPR_FUNC
+#     // GCC does not support Relaxing requirements on constexpr functions yet
+#	define VTMPL_RELAX_CONSTEXPR_FUNC   (1 || IS_CPP1Y_OR_GREATER && (!defined __GNUC__ || __GNUC__ > 4))
+# endif
+#
+# ifndef STRING_LITERAL_OPERATOR_TEMPLATES
+#	define STRING_LITERAL_OPERATOR_TEMPLATES   IS_CPP1Y_OR_GREATER
+# endif
+#
+# undef IS_CPP1Y_OR_GREATER
 
 #endif // TYPEDEFS_HXX_INCLUDED
