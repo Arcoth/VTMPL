@@ -45,28 +45,6 @@ namespace vtmpl
 		type_list< eval<sub_list<List, 0, pos>>,
 	                 eval<sub_list<List, pos + !keep_separator>> > {};
 
-	/// concat/concat_3
-
-	template <typename, typename          > struct concat;
-	template <typename, typename, typename> struct concat_3;
-
-	template < typename val_t,
-	           val_t ... first,
-	           val_t ... second >
-	struct concat<value_list<val_t, first...>,
-	               value_list<val_t, second...>> :
-		value_list<val_t, first..., second...> {};
-
-	// to avoid recursion
-	template < typename val_t,
-	           val_t ... first,
-	           val_t ... second,
-	           val_t ... third >
-	struct concat_3<value_list<val_t, first...>,
-			    value_list<val_t, second...>,
-			    value_list<val_t, third...>> :
-		value_list<val_t, first..., second..., third...> {};
-
 	// list operations
 
 	template <typename List, size_type pos>
@@ -177,12 +155,13 @@ namespace vtmpl
 			};
 
 
-		DEFINE_FO( add , a + b )
-		DEFINE_FO( bit_xor , a ^ b )
-		DEFINE_FO( bit_and , a & b )
-		DEFINE_FO( bit_or , a | b )
-		DEFINE_FO( multiply, a * b )
-		DEFINE_FO( modulo , a % b )
+		DEFINE_FO( plus      , a + b )
+		DEFINE_FO( bit_xor   , a ^ b )
+		DEFINE_FO( bit_and   , a & b )
+		DEFINE_FO( bit_or    , a | b )
+		DEFINE_FO( multiplies, a * b )
+		DEFINE_FO( divides   , a / b )
+		DEFINE_FO( modulus   , a % b )
 
 
 		DEFINE_UFO( square , a*a )
@@ -197,16 +176,13 @@ namespace vtmpl
 		template <typename FO, typename Val>
 		DEFINE_UFO( bind2nd, FO()(a, Val::value) )
 
+		template <class first, class... functions>
+		DEFINE_UFO( chain, chain<functions...>()( first()(a) ) )
+		template <class first>
+		DEFINE_UFO( chain<first>, first()(a) )
+
 		#undef DEFINE_FO
 		#undef DEFINE_UFO
-
-		template< template<typename FV, FV> class first,
-		          template<typename FV, FV> class second >
-		struct chain
-		{
-			template< typename T, T a >
-			struct function : std::integral_constant<T, second<T, first<T, a>::value>::value> {};
-		};
 	}
 
 }

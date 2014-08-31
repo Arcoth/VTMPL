@@ -54,7 +54,7 @@ namespace vtmpl
 #
 # ifndef VTMPL_RELAX_CONSTEXPR_FUNC
 #     // GCC does not support Relaxing requirements on constexpr functions yet
-#	define VTMPL_RELAX_CONSTEXPR_FUNC   (1 || IS_CPP1Y_OR_GREATER && (!defined __GNUC__ || __GNUC__ > 4))
+#	define VTMPL_RELAX_CONSTEXPR_FUNC   (IS_CPP1Y_OR_GREATER && (!defined __GNUC__ || __GNUC__ > 4))
 # endif
 #
 # ifndef STRING_LITERAL_OPERATOR_TEMPLATES

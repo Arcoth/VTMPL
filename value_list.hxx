@@ -130,6 +130,29 @@ namespace vtmpl
 	template <typename> struct is_value_list : std::false_type {};
 	template <typename V, V... v>
 	struct is_value_list<value_list<V, v...>> : std::true_type {};
+
+	/// concat/concat_3
+
+	template <typename, typename          > struct concat;
+	template <typename, typename, typename> struct concat_3;
+
+	template < typename val_t,
+	           val_t ... first,
+	           val_t ... second >
+	struct concat<value_list<val_t, first...>,
+	               value_list<val_t, second...>> :
+		value_list<val_t, first..., second...> {};
+
+	// to avoid recursion
+	template < typename val_t,
+	           val_t ... first,
+	           val_t ... second,
+	           val_t ... third >
+	struct concat_3<value_list<val_t, first...>,
+			    value_list<val_t, second...>,
+			    value_list<val_t, third...>> :
+		value_list<val_t, first..., second..., third...> {};
+
 }
 
 #endif // VALUE_LIST_HXX_INCLUDED
