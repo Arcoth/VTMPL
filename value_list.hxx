@@ -126,6 +126,10 @@ namespace vtmpl
 
 	template <typename List, typename List::value_type... val>
 	using list_with_type = value_list<typename List::value_type, val...>;
+
+	template <typename> struct is_value_list : std::false_type {};
+	template <typename V, V... v>
+	struct is_value_list<value_list<V, v...>> : std::true_type {};
 }
 
 #endif // VALUE_LIST_HXX_INCLUDED
