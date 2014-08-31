@@ -19,12 +19,12 @@ namespace vtmpl
 		using type = T;
 	};
 
+	template<typename T>
+	using eval = typename T::type;
+
 	using size_type = unsigned long;
 
 	using index_type = long;
-
-	template<typename T>
-	using eval = typename T::type;
 
 	template<bool B, typename T, typename F>
 	using cond = eval<std::conditional<B, T, F>>;
