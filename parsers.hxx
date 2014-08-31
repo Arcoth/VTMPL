@@ -12,10 +12,10 @@
 
 # if !VTMPL_RELAX_CONSTEXPR_FUNC
 #
-# error \
-	This file uses C++1Y-features (relaxed constraints on constexpr-functions). \
-	If your compiler supports C++1Y-features, activate them through a flag (most commonly -std=c++1y). \
-	Or, if your compiler lacks the macro definition, #define VTMPL_RELAX_CONSTEXPR_FUNC to 1 yourself.
+# warning \
+This file uses C++1Y-features (relaxed constraints on constexpr-functions). \
+If your compiler supports C++1Y-features, activate them through a flag (most commonly -std=c++1y). \
+Or, if your compiler lacks the macro definition, #define VTMPL_RELAX_CONSTEXPR_FUNC to 1 yourself.
 #
 # endif
 

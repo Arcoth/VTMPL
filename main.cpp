@@ -1,4 +1,4 @@
-/*#include "index_list.hxx"
+#include "index_list.hxx"
 #include "string.hxx"
 #include "algorithms.hxx"
 #include "type_list.hxx"
@@ -60,4 +60,4 @@ int main()
 	                                 value_list<std::uintmax_t, time()> >;
 
 	copy< transform<eval<list>, functions::bind2nd<functions::modulus, uint_<10>> > >( std::ostream_iterator<std::uintmax_t>(std::cout, " ") );
-}*/
+}

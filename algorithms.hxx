@@ -80,7 +80,7 @@ namespace vtmpl
 
 	/// find_first_not_of
 
-	#if VTMPL_RELAX_CONSTEXPR_FUNC == 1
+	#if VTMPL_RELAX_CONSTEXPR_FUNC
 
 	template <typename List, typename CheckList>
 	VTMPL_SCONST size_type find_first_not_of( size_type start_pos = 0 )

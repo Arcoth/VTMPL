@@ -50,17 +50,15 @@ namespace vtmpl
 
 # define VTMPL_SCONST static constexpr
 
-# define IS_CPP1Y_OR_GREATER (__cplusplus > 201103)
+# define VTMPL_IS_CPP1Y_OR_GREATER (__cplusplus > 201103)
 #
 # ifndef VTMPL_RELAX_CONSTEXPR_FUNC
-#     // GCC does not support Relaxing requirements on constexpr functions yet
-#	define VTMPL_RELAX_CONSTEXPR_FUNC   (IS_CPP1Y_OR_GREATER && (!defined __GNUC__ || __GNUC__ > 4))
+#     // GCC does not support Relaxing requirements on constexpr functions yet.
+#	define VTMPL_RELAX_CONSTEXPR_FUNC VTMPL_IS_CPP1Y_OR_GREATER
 # endif
 #
 # ifndef STRING_LITERAL_OPERATOR_TEMPLATES
-#	define STRING_LITERAL_OPERATOR_TEMPLATES   IS_CPP1Y_OR_GREATER
+#	define STRING_LITERAL_OPERATOR_TEMPLATES   VTMPL_IS_CPP1Y_OR_GREATER
 # endif
-#
-# undef IS_CPP1Y_OR_GREATER
 
 #endif // TYPEDEFS_HXX_INCLUDED
