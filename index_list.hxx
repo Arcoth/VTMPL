@@ -1,4 +1,4 @@
-/* Copyright (c) Robert Haberlach, 2013-2014.
+/* Copyright (c) Arcoth@c-plusplus.net, 2013-2014.
 
 	Distributed under the Boost Software License, Version 1.0. (See accompanying
 	file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) */
@@ -43,7 +43,6 @@ namespace vtmpl
 	template <size_type N>
 	using make_index_list = eval< make_contiguous_list<index_type, N> >;
 
-
 	// make_list_val: Creates a list of N occurences of the value val
 
 	template <typename V, size_type N, V val>
@@ -52,6 +51,21 @@ namespace vtmpl
 
 	template <typename V, V val>
 	struct make_list_val<V, 1, val> : value_list<V, val> {};
+
+
+
+	/// create a value list from an array pointer and a length
+
+	template <typename T, T const* ptr,
+	          size_type len,
+	          typename = make_index_list<len>>
+	struct list_from_ptr;
+
+	template< typename T, T const* ptr,
+	          size_type len,
+	          index_type... indices >
+	struct list_from_ptr<T, ptr, len, index_list<indices...>> :
+		value_list<T, ptr[indices]...>  {};
 }
 
 #endif // INDEX_LIST_HXX_INCLUDED

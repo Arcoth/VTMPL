@@ -1,4 +1,4 @@
-/* Copyright (c) Robert Haberlach, 2013-2014.
+/* Copyright (c) Arcoth@c-plusplus.net, 2013-2014.
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) */
@@ -30,14 +30,12 @@ namespace vtmpl
 		return a < b? a : b;
 	}
 
-	#define VTMPL_ASSERT( B, MSG ) ( B? 0 : throw ::std::invalid_argument{MSG})
-
-	#define VTMPL_DEFINE_FORWARDER(name, impl)              \
-		template <typename... Args>                              \
-		constexpr auto name( Args&&... args )                              \
-		VTMPL_AUTO_RETURN( (impl)(::std::forward<Args>(args)...) )
-
-	#define VTMPL_AUTO_RETURN(...) -> decltype(__VA_ARGS__) {return (__VA_ARGS__);}
+	template <std::size_t N>
+	constexpr void assert(bool b, char const(&msg)[N])
+	{
+		if (!b)
+			throw std::invalid_argument(msg);
+	}
 
 }
 

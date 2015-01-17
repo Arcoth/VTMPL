@@ -1,4 +1,4 @@
-/* Copyright (c) Robert Haberlach, 2013-2014.
+/* Copyright (c) Arcoth@c-plusplus.net, 2013-2014.
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) */
@@ -114,6 +114,8 @@ namespace vtmpl
 	template<typename T, T... vals>
 	constexpr T nt_array_from<value_list<T, vals...>>::array[];
 
+	/// initialize an aggregate from a value_list:
+
 	template<typename, typename> struct initialize;
 	template<typename Agg, typename T, T... vals>
 	struct initialize<Agg, value_list<T, vals...>>
@@ -124,9 +126,11 @@ namespace vtmpl
 		{ return Agg( vals... ); }
 	};
 
+	/// create a value_list with the same value type as List
 	template <typename List, typename List::value_type... val>
 	using list_with_type = value_list<typename List::value_type, val...>;
 
+	// Check whether a type is a specialization of a value_list
 	template <typename> struct is_value_list : std::false_type {};
 	template <typename V, V... v>
 	struct is_value_list<value_list<V, v...>> : std::true_type {};
@@ -143,7 +147,6 @@ namespace vtmpl
 	               value_list<val_t, second...>> :
 		value_list<val_t, first..., second...> {};
 
-	// to avoid recursion
 	template < typename val_t,
 	           val_t ... first,
 	           val_t ... second,

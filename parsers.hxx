@@ -1,4 +1,4 @@
-/* Copyright (c) Robert Haberlach, 2013-2014.
+/* Copyright (c) Arcoth@c-plusplus.net, 2013-2014.
 
 	Distributed under the Boost Software License, Version 1.0.
 	(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) */
@@ -56,7 +56,7 @@ namespace vtmpl
 		else if( first == '+' )
 			++pos;
 		else
-			VTMPL_ASSERT(isdigit(first), "Applied parse_signed to string without sign or digit!");
+			vtmpl::assert(isdigit(first), "Applied parse_signed to string without sign or digit!");
 
 		auto pair = parse_unsigned<String>(pos);
 
