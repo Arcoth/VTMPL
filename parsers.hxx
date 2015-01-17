@@ -37,7 +37,7 @@ namespace vtmpl
 			++pos;
 		}
 
-		VTMPL_ASSERT(read_anything, "Applied parse_unsigned to string without digits!");
+		vtmpl::assert(read_anything, "Applied parse_unsigned to string without digits!");
 
 		return {rval, pos};
 	}
