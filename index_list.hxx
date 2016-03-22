@@ -1,4 +1,4 @@
-/* Copyright (c) Arcoth@c-plusplus.net, 2013-2014.
+/* Copyright (c) Arcoth, 2013-2015.
 
 	Distributed under the Boost Software License, Version 1.0. (See accompanying
 	file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) */
@@ -25,10 +25,12 @@ namespace vtmpl
 	                                                                                   (3*sizeof...(indices)+indices)...,
 	                                                                                   (4*sizeof...(indices)+tail)...> {};
 
-	//! make_contiguous_list: Essential function to generate a list of numbers, used in many other functions to avoid explicit and/or linear recursion.
-	/* Generates a list of natural numbers. make_index_list<4> -> {0, 1, 2, 3}, for example, and make_index_list<235> -> {0, 1, 2, 3, 4, ..., 234}.
-	   This definition is also more efficient (in terms of computational complexity) than - for instance - the libstdc++-implementation, which uses linear instead of binary recursion.
-	   So stick to this instead of std::index_sequence and std::make_index_sequence until a compiler intrinsic turns up */
+	//! make_contiguous_list: Essential function used to generate a list of numbers, used in many other
+	//  functions to avoid explicit and/or linear recursion.
+	/* This definition is more efficient (in terms of instantiation depth) than - for instance -
+	   the libstdc++-implementation, which uses linear instead of binary recursion.
+	   So stick to this instead of std::index_sequence and std::make_index_sequence until a
+	   compiler intrinsic turns up or the libraries decide to provide proper implementations. */
 
 	template <typename V, size_type N>
 	struct make_contiguous_list :
